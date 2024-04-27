@@ -104,14 +104,22 @@ function update() {
   // Game over
   if (ball.x < 0) {
     player2Score++;
+    resetGame(1);
   } else if (ball.x + ballWidth > boardWidth) {
     player1Score++;
+    resetGame(-1);
   }
 
   // Score
   context.font = "45px sans-serif";
   context.fillText(player1Score, boardWidth / 5, 45);
   context.fillText(player2Score, boardWidth - 120, 45);
+
+  // Draw dotted line down the middle
+  for (let i = 10; i < board.height; i += 25) {
+    // i = starting y position, draw a square every 25 pixels down
+    context.fillRect(board.width / 2 - 10, i, 5, 5);
+  }
 }
 
 function outOfBounds(yPosition) {
@@ -146,3 +154,14 @@ function detectCollision(a, b) {
 // a's top right corner passes b's top left corner
 //a's bottom left corner passes b's top left corner
 // a's bottom left corner passes b's top left corner
+
+function resetGame(direction) {
+  ball = {
+    x: boardWidth / 2,
+    y: boardHeight / 2,
+    width: ballWidth,
+    height: ballHeight,
+    velocityX: direction,
+    velocityY: 2,
+  };
+}

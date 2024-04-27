@@ -79,8 +79,22 @@ function update() {
   ball.y += ball.velocityY;
   context.fillRect(ball.x, ball.y, ball.width, ball.height);
 
+  // If ball touches top or bottom of canvas
   if (ball.y <= 0 || ball.y + ball.height >= boardHeight) {
-    ball.velocityY *= -1;
+    ball.velocityY *= -1; // Reverse direction
+  }
+
+  // Bounce the ball back
+  if (detectCollision(ball, player1)) {
+    if (ball.x <= player1.x + player1.width) {
+      // Left side of the ball touches right side of player1
+      ball.velocityX *= -1; // Flip x direction
+    }
+  } else if (detectCollision(ball, player2)) {
+    if (ball.x + ballWidth >= player2.x) {
+      //Right side of ball touches left side of player2
+      ball.velocityX *= -1; // Flip x direction
+    }
   }
 }
 
@@ -106,9 +120,13 @@ function movePlayer(e) {
 
 function detectCollision(a, b) {
   return (
-    a.x < b.x + b.width && // a's top left corner doesnt reach b's top corner
-    a.x + a.width > b.x && // a's top right corner passes b's top left corner
-    a.y < b.y + b.height && //a's bottom left corner passes b's top left corner
-    a.y + a.height > b.y // a's bottom left corner passes b's top left corner
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
   );
 }
+// a's top left corner doesnt reach b's top corner
+// a's top right corner passes b's top left corner
+//a's bottom left corner passes b's top left corner
+// a's bottom left corner passes b's top left corner

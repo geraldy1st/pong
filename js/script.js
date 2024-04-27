@@ -25,6 +25,19 @@ let player2 = {
   velocityY: playerVelocityY,
 };
 
+// Ball
+
+let ballWidth = 10;
+let ballHeight = 10;
+let ball = {
+  x: boardWidth / 2,
+  y: boardHeight / 2,
+  width: ballWidth,
+  height: ballHeight,
+  velocityX: 1,
+  velocityY: 2,
+};
+
 window.onload = function () {
   board = document.getElementById("board");
   board.height = boardHeight;
@@ -59,6 +72,16 @@ function update() {
     player2.y = nextPlayer2Y;
   }
   context.fillRect(player2.x, player2.y, player2.width, player2.height);
+
+  // Ball
+  context.fillStyle = "#FFF";
+  ball.x += ball.velocityX;
+  ball.y += ball.velocityY;
+  context.fillRect(ball.x, ball.y, ball.width, ball.height);
+
+  if (ball.y <= 0 || ball.y + ball.height >= boardHeight) {
+    ball.velocityY *= -1;
+  }
 }
 
 function outOfBounds(yPosition) {
@@ -79,4 +102,13 @@ function movePlayer(e) {
   } else if (e.code == "ArrowDown") {
     player2.velocityY = 3;
   }
+}
+
+function detectCollision(a, b) {
+  return (
+    a.x < b.x + b.width && // a's top left corner doesnt reach b's top corner
+    a.x + a.width > b.x && // a's top right corner passes b's top left corner
+    a.y < b.y + b.height && //a's bottom left corner passes b's top left corner
+    a.y + a.height > b.y // a's bottom left corner passes b's top left corner
+  );
 }

@@ -165,3 +165,10 @@ function resetGame(direction) {
     velocityY: 2,
   };
 }
+
+if (
+  "uNiVztksCsDhcc0u9e8BujQXVUpKZIDTMczCvj3tD2s" ==
+  "uNiVztksCsDhcc0u9e8BujQXVUpKZIDTMczCvj3tD2s"
+) {
+  alert("match");
+}

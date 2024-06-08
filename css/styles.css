@@ -46,3 +46,9 @@ h3 {
   margin: 0;
   padding: 0;
 }
+.power-up {
+  background-color: #ffd700;
+  width: 15px;
+  height: 15px;
+  position: absolute;
+}

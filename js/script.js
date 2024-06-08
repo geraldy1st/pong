@@ -41,6 +41,12 @@ let ball = {
 let player1Score = 0;
 let player2Score = 0;
 
+let powerUps = []; // Array to hold power-ups
+
+// Sound effects
+let hitSound = new Audio("audio/09 SFX.mp3");
+let scoreSound = new Audio("audio/18 SFX.mp3");
+
 window.onload = function () {
   board = document.getElementById("board");
   context = board.getContext("2d"); // Use for drawing on the board
@@ -107,6 +113,9 @@ window.onload = function () {
 
   // Add event listener for reset button
   document.getElementById("reset-button").addEventListener("click", resetScore);
+
+  // Generate power-ups at regular intervals
+  setInterval(generatePowerUp, 10000); // Generate a power-up every 10 seconds
 };
 
 function adjustCanvasSize() {
@@ -142,6 +151,9 @@ function update() {
 
   // Score
   drawScore();
+
+  // Power-ups
+  updatePowerUps();
 }
 
 function updatePlayer(player) {
@@ -163,10 +175,10 @@ function updateBall() {
   // Ball collision with players
   if (detectCollision(ball, player1) && ball.velocityX < 0) {
     ball.velocityX *= -1;
-    document.getElementById("hitSound").play(); // Play hit sound
+    hitSound.play(); // Play hit sound
   } else if (detectCollision(ball, player2) && ball.velocityX > 0) {
     ball.velocityX *= -1;
-    document.getElementById("hitSound").play(); // Play hit sound
+    hitSound.play(); // Play hit sound
   }
 
   // Game over
@@ -255,7 +267,7 @@ function resetGame(direction) {
   ball.velocityX = direction * 2;
   ball.velocityY = 2;
 
-  document.getElementById("scoreSound").play(); // Play score sound
+  scoreSound.play(); // Play score sound
 }
 
 function resetScore() {
@@ -263,15 +275,6 @@ function resetScore() {
   player2Score = 0;
 }
 
-let powerUps = [];
-
-// Define the power-up structure
-let powerUp = {
-  x: 0, // x-coordinate of power-up
-  y: 0, // y-coordinate of power-up
-  type: "", // Type of power-up (e.g., "speedBoost", "sizeIncrease")
-  duration: 5000, // Duration of power-up effect in milliseconds
-};
 function generatePowerUp() {
   let powerUpType = "speedBoost"; // For now, let's start with a speed boost power-up
   let powerUpX = Math.random() * (boardWidth - 20) + 10; // Random x-coordinate
@@ -280,9 +283,44 @@ function generatePowerUp() {
   let newPowerUp = {
     x: powerUpX,
     y: powerUpY,
+    width: 15, // Width of power-up
+    height: 15, // Height of power-up
     type: powerUpType,
     duration: 5000, // Duration of power-up effect in milliseconds
   };
 
   powerUps.push(newPowerUp);
+}
+
+function updatePowerUps() {
+  // Loop through all power-ups and draw them
+  for (let i = 0; i < powerUps.length; i++) {
+    let powerUp = powerUps[i];
+    drawPowerUp(powerUp);
+
+    // Check for collision with the ball
+    if (detectCollision(powerUp, ball)) {
+      activatePowerUp(powerUp);
+      powerUps.splice(i, 1); // Remove power-up after activation
+    }
+  }
+}
+
+function drawPowerUp(powerUp) {
+  context.fillStyle = "#FFD700"; // Gold color for power-up
+  context.fillRect(powerUp.x, powerUp.y, 15, 15); // Draw power-up as a small square
+}
+
+function activatePowerUp(powerUp) {
+  switch (powerUp.type) {
+    case "speedBoost":
+      ball.velocityX *= 1.5; // Increase ball speed by 50%
+      ball.velocityY *= 1.5; // Increase ball speed by 50%
+      setTimeout(() => {
+        ball.velocityX /= 1.5; // Revert ball speed after duration
+        ball.velocityY /= 1.5; // Revert ball speed after duration
+      }, powerUp.duration);
+      break;
+    // Add other power-up types here
+  }
 }

@@ -11,7 +11,7 @@ let playerVelocityY = 0;
 
 let player1 = {
   x: 10,
-  y: boardHeight / 2,
+  y: boardHeight / 2 - playerHeight / 2,
   width: playerWidth,
   height: playerHeight,
   velocityY: playerVelocityY,
@@ -19,19 +19,18 @@ let player1 = {
 
 let player2 = {
   x: boardWidth - playerWidth - 10,
-  y: boardHeight / 2,
+  y: boardHeight / 2 - playerHeight / 2,
   width: playerWidth,
   height: playerHeight,
   velocityY: playerVelocityY,
 };
 
 // Ball
-
 let ballWidth = 10;
 let ballHeight = 10;
 let ball = {
-  x: boardWidth / 2,
-  y: boardHeight / 2,
+  x: boardWidth / 2 - ballWidth / 2,
+  y: boardHeight / 2 - ballHeight / 2,
   width: ballWidth,
   height: ballHeight,
   velocityX: 1,
@@ -48,97 +47,168 @@ window.onload = function () {
   board.width = boardWidth;
   context = board.getContext("2d"); // Use for drawing on the board
 
-  // Draw inital player1
-  context.fillStyle = "#ade";
-  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  // Initial draw
+  drawPlayer(player1);
+  drawPlayer(player2);
 
   requestAnimationFrame(update);
-  document.addEventListener("keyup", movePlayer);
+  document.addEventListener("keydown", movePlayer);
+  document.addEventListener("keyup", stopPlayer);
+
+  // Add event listeners for buttons
+  document
+    .getElementById("p1-up")
+    .addEventListener("touchstart", () =>
+      movePlayer({ code: "KeyS", type: "keydown" })
+    );
+  document
+    .getElementById("p1-down")
+    .addEventListener("touchstart", () =>
+      movePlayer({ code: "KeyZ", type: "keydown" })
+    );
+  document
+    .getElementById("p2-up")
+    .addEventListener("touchstart", () =>
+      movePlayer({ code: "ArrowUp", type: "keydown" })
+    );
+  document
+    .getElementById("p2-down")
+    .addEventListener("touchstart", () =>
+      movePlayer({ code: "ArrowDown", type: "keydown" })
+    );
+
+  document
+    .getElementById("p1-up")
+    .addEventListener("touchend", () =>
+      stopPlayer({ code: "KeyS", type: "keyup" })
+    );
+  document
+    .getElementById("p1-down")
+    .addEventListener("touchend", () =>
+      stopPlayer({ code: "KeyZ", type: "keyup" })
+    );
+  document
+    .getElementById("p2-up")
+    .addEventListener("touchend", () =>
+      stopPlayer({ code: "ArrowUp", type: "keyup" })
+    );
+  document
+    .getElementById("p2-down")
+    .addEventListener("touchend", () =>
+      stopPlayer({ code: "ArrowDown", type: "keyup" })
+    );
 };
 
 function update() {
   requestAnimationFrame(update);
-  context.clearRect(0, 0, board.width, boardHeight);
+  context.clearRect(0, 0, board.width, board.height);
 
   // Player1
-  context.fillStyle = "#ade";
-  // player1.y += player1.velocityY;
-  let nextPlayer1Y = player1.y + player1.velocityY;
-  if (!outOfBounds(nextPlayer1Y)) {
-    player1.y = nextPlayer1Y;
-  }
-  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  updatePlayer(player1);
+  drawPlayer(player1);
 
   // Player2
-  // player2.y += player2.velocityY;
-  let nextPlayer2Y = player2.y + player2.velocityY;
-  if (!outOfBounds(nextPlayer2Y)) {
-    player2.y = nextPlayer2Y;
-  }
-  context.fillRect(player2.x, player2.y, player2.width, player2.height);
+  updatePlayer(player2);
+  drawPlayer(player2);
 
   // Ball
-  context.fillStyle = "#FFF";
+  updateBall();
+  drawBall();
+
+  // Score
+  drawScore();
+}
+
+function updatePlayer(player) {
+  let nextY = player.y + player.velocityY;
+  if (!outOfBounds(nextY, player.height)) {
+    player.y = nextY;
+  }
+}
+
+function updateBall() {
   ball.x += ball.velocityX;
   ball.y += ball.velocityY;
-  context.fillRect(ball.x, ball.y, ball.width, ball.height);
 
-  // If ball touches top or bottom of canvas
+  // Ball collision with top or bottom of canvas
   if (ball.y <= 0 || ball.y + ball.height >= boardHeight) {
     ball.velocityY *= -1; // Reverse direction
   }
 
-  // Bounce the ball back
-  if (detectCollision(ball, player1)) {
-    if (ball.x <= player1.x + player1.width) {
-      // Left side of the ball touches right side of player1
-      ball.velocityX *= -1; // Flip x direction
-    }
-  } else if (detectCollision(ball, player2)) {
-    if (ball.x + ballWidth >= player2.x) {
-      //Right side of ball touches left side of player2
-      ball.velocityX *= -1; // Flip x direction
-    }
+  // Ball collision with players
+  if (detectCollision(ball, player1) && ball.velocityX < 0) {
+    ball.velocityX *= -1;
+  } else if (detectCollision(ball, player2) && ball.velocityX > 0) {
+    ball.velocityX *= -1;
   }
 
   // Game over
   if (ball.x < 0) {
     player2Score++;
     resetGame(1);
-  } else if (ball.x + ballWidth > boardWidth) {
+  } else if (ball.x + ball.width > boardWidth) {
     player1Score++;
     resetGame(-1);
   }
+}
 
-  // Score
+function drawPlayer(player) {
+  context.fillStyle = "#ade";
+  context.fillRect(player.x, player.y, player.width, player.height);
+}
+
+function drawBall() {
+  context.fillStyle = "#FFF";
+  context.fillRect(ball.x, ball.y, ball.width, ball.height);
+}
+
+function drawScore() {
   context.font = "45px sans-serif";
   context.fillText(player1Score, boardWidth / 5, 45);
   context.fillText(player2Score, boardWidth - 120, 45);
 
   // Draw dotted line down the middle
+  context.fillStyle = "#FFF";
   for (let i = 10; i < board.height; i += 25) {
-    // i = starting y position, draw a square every 25 pixels down
-    context.fillRect(board.width / 2 - 10, i, 5, 5);
+    context.fillRect(board.width / 2 - 2.5, i, 5, 5);
   }
 }
 
-function outOfBounds(yPosition) {
-  return yPosition < 0 || yPosition + playerHeight > boardHeight;
+function outOfBounds(yPosition, height) {
+  return yPosition < 0 || yPosition + height > boardHeight;
 }
 
 function movePlayer(e) {
-  // Player1
-  if (e.code == "KeyS") {
-    player1.velocityY = -3;
-  } else if (e.code == "KeyZ") {
-    player1.velocityY = 3;
+  switch (e.code) {
+    // Player1
+    case "KeyS":
+      player1.velocityY = -3;
+      break;
+    case "KeyZ":
+      player1.velocityY = 3;
+      break;
+    // Player2
+    case "ArrowUp":
+      player2.velocityY = -3;
+      break;
+    case "ArrowDown":
+      player2.velocityY = 3;
+      break;
   }
+}
 
-  // Player2
-  if (e.code == "ArrowUp") {
-    player2.velocityY = -3;
-  } else if (e.code == "ArrowDown") {
-    player2.velocityY = 3;
+function stopPlayer(e) {
+  switch (e.code) {
+    // Player1
+    case "KeyS":
+    case "KeyZ":
+      player1.velocityY = 0;
+      break;
+    // Player2
+    case "ArrowUp":
+    case "ArrowDown":
+      player2.velocityY = 0;
+      break;
   }
 }
 
@@ -150,19 +220,14 @@ function detectCollision(a, b) {
     a.y + a.height > b.y
   );
 }
-// a's top left corner doesnt reach b's top corner
-// a's top right corner passes b's top left corner
-//a's bottom left corner passes b's top left corner
-// a's bottom left corner passes b's top left corner
 
 function resetGame(direction) {
   ball = {
-    x: boardWidth / 2,
-    y: boardHeight / 2,
+    x: boardWidth / 2 - ballWidth / 2,
+    y: boardHeight / 2 - ballHeight / 2,
     width: ballWidth,
     height: ballHeight,
     velocityX: direction,
     velocityY: 2,
   };
 }
-

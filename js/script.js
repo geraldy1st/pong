@@ -1,7 +1,7 @@
 // Board
 let board;
-let boardWidth = 500;
-let boardHeight = 500;
+let boardWidth = 500; // This will be adjusted dynamically
+let boardHeight = 500; // This will be adjusted dynamically
 let context;
 
 // Players
@@ -43,9 +43,11 @@ let player2Score = 0;
 
 window.onload = function () {
   board = document.getElementById("board");
-  board.height = boardHeight;
-  board.width = boardWidth;
   context = board.getContext("2d"); // Use for drawing on the board
+
+  // Adjust canvas size
+  adjustCanvasSize();
+  window.addEventListener("resize", adjustCanvasSize);
 
   // Initial draw
   drawPlayer(player1);
@@ -97,7 +99,30 @@ window.onload = function () {
     .addEventListener("touchend", () =>
       stopPlayer({ code: "ArrowDown", type: "keyup" })
     );
+
+  // Disable right-click context menu
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+
+  // Add event listener for reset button
+  document.getElementById("reset-button").addEventListener("click", resetScore);
 };
+
+function adjustCanvasSize() {
+  const width = Math.min(window.innerWidth * 0.9, 500);
+  board.width = width;
+  board.height = width; // Maintain aspect ratio
+  boardWidth = width;
+  boardHeight = width;
+
+  // Update player and ball positions based on new canvas size
+  player1.y = boardHeight / 2 - playerHeight / 2;
+  player2.x = boardWidth - playerWidth - 10;
+  player2.y = boardHeight / 2 - playerHeight / 2;
+  ball.x = boardWidth / 2 - ballWidth / 2;
+  ball.y = boardHeight / 2 - ballHeight / 2;
+}
 
 function update() {
   requestAnimationFrame(update);
@@ -222,12 +247,14 @@ function detectCollision(a, b) {
 }
 
 function resetGame(direction) {
-  ball = {
-    x: boardWidth / 2 - ballWidth / 2,
-    y: boardHeight / 2 - ballHeight / 2,
-    width: ballWidth,
-    height: ballHeight,
-    velocityX: direction,
-    velocityY: 2,
-  };
+  ball.x = boardWidth / 2 - ballWidth / 2;
+  ball.y = boardHeight / 2 - ballHeight / 2;
+
+  ball.velocityX = direction * 2;
+  ball.velocityY = 2;
+}
+
+function resetScore() {
+  player1Score = 0;
+  player2Score = 0;
 }

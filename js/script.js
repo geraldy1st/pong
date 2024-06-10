@@ -314,11 +314,11 @@ function drawPowerUp(powerUp) {
 function activatePowerUp(powerUp) {
   switch (powerUp.type) {
     case "speedBoost":
-      ball.velocityX *= 1.5; // Increase ball speed by 50%
-      ball.velocityY *= 1.5; // Increase ball speed by 50%
+      ball.velocityX *= 2.5; // Increase ball speed by 50%
+      ball.velocityY *= 2.5; // Increase ball speed by 50%
       setTimeout(() => {
-        ball.velocityX /= 1.5; // Revert ball speed after duration
-        ball.velocityY /= 1.5; // Revert ball speed after duration
+        ball.velocityX == 1.5; // Revert ball speed after duration
+        ball.velocityY == 1.5; // Revert ball speed after duration
       }, powerUp.duration);
       break;
     // Add other power-up types here

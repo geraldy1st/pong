@@ -1,3 +1,11 @@
+:root {
+  --neon-pink: #ff2d55;
+  --neon-blue: #00fff9;
+  --neon-purple: #b026ff;
+  --neon-yellow: #fff600;
+  --dark-bg: #0a0a0f;
+}
+
 body {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
@@ -8,19 +16,32 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0;
-  padding: 0;
+  padding: 20px 0;
   height: 100vh;
-  background-color: #000;
+  background-color: var(--dark-bg);
+  background-image: linear-gradient(
+      45deg,
+      rgba(0, 255, 249, 0.05) 1%,
+      transparent 1%
+    ),
+    linear-gradient(-45deg, rgba(255, 45, 85, 0.05) 1%, transparent 1%);
+  background-size: 3px 3px;
   color: #fff;
+  position: relative;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 #board {
-  background-color: #222;
-  border-top: 5px solid rgb(0, 255, 0);
-  border-bottom: 5px solid rgb(0, 255, 0);
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--neon-blue);
+  box-shadow: 0 0 20px var(--neon-blue), inset 0 0 20px var(--neon-blue);
+  border-radius: 5px;
   width: 90%;
   max-width: 500px;
   aspect-ratio: 1;
+  position: relative;
+  z-index: 1;
 }
 #controls {
   display: flex;
@@ -29,6 +50,11 @@ body {
   width: 90%;
   /* max-width: 500px; */
   margin-top: 10px;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
 }
 .control-section {
   display: flex;
@@ -40,9 +66,11 @@ body {
   height: 70px;
   font-size: 36px;
   margin: 5px;
-  background-color: #444;
-  color: #fff;
-  border: none;
+  background: transparent;
+  border: 2px solid var(--neon-purple);
+  color: var(--neon-purple);
+  box-shadow: 0 0 10px var(--neon-purple);
+  transition: all 0.3s;
   border-radius: 5px;
 }
 
@@ -55,4 +83,262 @@ h3 {
   width: 15px;
   height: 15px;
   position: absolute;
+}
+
+.menu-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(10, 10, 15, 0.95);
+  padding: 2rem;
+  border-radius: 10px;
+  z-index: 1000;
+  border: 2px solid var(--neon-pink);
+  box-shadow: 0 0 30px var(--neon-pink);
+  backdrop-filter: blur(5px);
+}
+
+.menu-container h1 {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+  font-family: "Orbitron", sans-serif;
+  letter-spacing: 2px;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+.menu-container button {
+  background: transparent;
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  text-shadow: 0 0 5px var(--neon-blue);
+  box-shadow: 0 0 10px var(--neon-blue);
+  font-family: "Orbitron", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0.5rem 0;
+  display: block;
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.menu-container button:hover {
+  background: var(--neon-blue);
+  color: var(--dark-bg);
+  box-shadow: 0 0 20px var(--neon-blue);
+}
+
+.instructions {
+  color: #fff;
+  margin-top: 2rem;
+  transition: opacity 0.3s, transform 0.3s;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.instructions h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.instructions.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.game-mode {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.mode-switch {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 1rem;
+}
+
+.mode-switch input {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
+
+.mode-switch .slider {
+  color: var(--neon-blue);
+  text-shadow: 0 0 5px var(--neon-blue);
+  font-size: 1.1rem;
+}
+
+.pause-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: 2px solid var(--neon-yellow);
+  color: var(--neon-yellow);
+  box-shadow: 0 0 10px var(--neon-yellow);
+  text-shadow: 0 0 5px var(--neon-yellow);
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pause-button:hover {
+  background: var(--neon-yellow);
+  color: var(--dark-bg);
+  box-shadow: 0 0 20px var(--neon-yellow);
+}
+
+.pause-menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 10, 15, 0.95);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+  border: 2px solid var(--neon-yellow);
+  box-shadow: 0 0 30px var(--neon-yellow);
+  backdrop-filter: blur(5px);
+  min-width: 300px;
+}
+
+.pause-menu h2 {
+  color: var(--neon-yellow);
+  text-shadow: 0 0 10px var(--neon-yellow);
+  font-family: "Orbitron", sans-serif;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+}
+
+.pause-menu button {
+  background: transparent;
+  border: 2px solid var(--neon-blue);
+  color: var(--neon-blue);
+  text-shadow: 0 0 5px var(--neon-blue);
+  box-shadow: 0 0 10px var(--neon-blue);
+  font-family: "Orbitron", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0.5rem 0;
+  width: 200px;
+  transition: all 0.3s;
+}
+
+.pause-menu button:hover {
+  background: var(--neon-blue);
+  color: var(--dark-bg);
+  box-shadow: 0 0 20px var(--neon-blue);
+}
+
+.pause-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+}
+
+/* Add glitch effect for game over */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.game-over {
+  animation: glitch 0.3s infinite;
+}
+
+.reset-button {
+  display: none;
+}
+
+.opponent-select {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.opponent-select .mode-switch input[type="radio"] {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
+
+.opponent-select .mode-switch {
+  margin-bottom: 0.5rem;
+}
+
+.difficulty-select {
+  margin-top: 1rem;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+  overflow: hidden;
+}
+
+.difficulty-select.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.difficulty-select h3 {
+  color: var(--neon-purple);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.difficulty-select .mode-switch {
+  margin-bottom: 0.3rem;
+  margin-left: 1rem;
 }

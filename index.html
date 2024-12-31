@@ -7,9 +7,54 @@
     <link rel="stylesheet" href="css/styles.css">
     <audio id="hitSound" src="audio/09 SFX.mp3"></audio>
     <audio id="scoreSound" src="audio/18 SFX.mp3"></audio>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="game-menu" class="menu-container">
+        <h1>CYBER PONG</h1>
+        <button id="start-game">Initialize Game</button>
+        <button id="options-button">System Config</button>
+        <div id="instructions" class="instructions hidden">
+            <h2>Neural Interface:</h2>
+            <p>Player 1: S (↑) and Z (↓)</p>
+            <p>Player 2: ↑ and ↓ arrows</p>
+            <div class="game-mode">
+                <h2>Runtime Mode:</h2>
+                <label class="mode-switch">
+                    <input type="checkbox" id="classic-mode">
+                    <span class="slider">Legacy Protocol</span>
+                </label>
+                <h2>Opponent:</h2>
+                <div class="opponent-select">
+                    <label class="mode-switch">
+                        <input type="radio" name="opponent" id="player-mode" checked>
+                        <span class="slider">Player 2</span>
+                    </label>
+                    <label class="mode-switch">
+                        <input type="radio" name="opponent" id="cpu-mode">
+                        <span class="slider">CPU</span>
+                    </label>
+                </div>
+                <div id="cpu-difficulty" class="difficulty-select hidden">
+                    <h3>CPU Difficulty:</h3>
+                    <label class="mode-switch">
+                        <input type="radio" name="difficulty" id="easy-mode" checked>
+                        <span class="slider">Easy</span>
+                    </label>
+                    <label class="mode-switch">
+                        <input type="radio" name="difficulty" id="normal-mode">
+                        <span class="slider">Normal</span>
+                    </label>
+                    <label class="mode-switch">
+                        <input type="radio" name="difficulty" id="unbeatable-mode">
+                        <span class="slider">Unbeatable</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
     <canvas id="board"></canvas>
+    <button id="pause-button" class="pause-button hidden">⏸️</button>
     <div id="controls">
         <div class="control-section">
           <h3>Player 1</h3>
@@ -22,7 +67,6 @@
           <button class="control-button" id="p2-down">↓</button>
         </div>
       </div>
-      <button class="reset-button" id="reset-button">Reset Score</button>
       <script src="js/script.js"></script>
 </body>
 </html>
